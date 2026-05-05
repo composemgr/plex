@@ -47,8 +47,8 @@ See `docker-compose.yaml` for complete list of configurable options.
 
 ## 📂 Volumes
 
-- `./rootfs/config/plex` - Data storage
-- `./rootfs/data/plex` - Data storage
+- `./volumes/config/plex` - Data storage
+- `./volumes/data/plex` - Data storage
 
 ## 🔍 Logging
 
