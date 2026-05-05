@@ -21,8 +21,8 @@ services:
       PUID: ${SERVICE_USER:-1000}
       PGID: ${SERVICE_GROUP:-1000}
     volumes:
-      - ./rootfs/config/plex:/config
-      - ./rootfs/data/plex:/data
+      - ./volumes/config/plex:/config
+      - ./volumes/data/plex:/data
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:32400"]
       interval: 30s
