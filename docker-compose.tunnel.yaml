@@ -1,0 +1,46 @@
+name: plex
+x-logging: &default-logging
+  options:
+    max-size: '5m'
+    max-file: '1'
+  driver: json-file
+
+services:
+  plex:
+    image: plexinc/pms-docker:latest
+    pull_policy: always
+    container_name: plex-app
+    hostname: ${BASE_HOST_NAME:-$HOSTNAME}
+    restart: always
+    logging: *default-logging
+    labels:
+      - 'cloudflare.enable=true'
+      - 'cloudflare.service=http://plex-app:32400'
+      - 'cloudflare.hostname=${BASE_HOST_NAME:-$HOSTNAME}'
+    networks:
+      - plex
+      - cloudflare
+    environment:
+      TZ: ${TZ:-America/New_York}
+      PLEX_CLAIM: ${PLEX_CLAIM:-}
+      ADVERTISE_IP: http://${BASE_HOST_NAME:-localhost}:32400/
+      PUID: ${SERVICE_USER:-1000}
+      PGID: ${SERVICE_GROUP:-1000}
+      CONTAINER_NAME: plex-app
+      HOSTNAME: ${BASE_HOST_NAME:-$HOSTNAME}
+    volumes:
+      - ./volumes/config/plex:/config
+      - ./volumes/data/plex/media:/data
+      - ./volumes/data/plex/transcode:/transcode
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:32400/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  plex:
+    name: plex
+    external: false
+  cloudflare:
+    external: true

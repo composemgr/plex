@@ -1,11 +1,11 @@
-# nginx proxy address - http://172.17.0.1:32400
+# nginx proxy address - http://172.17.0.1:64306
 
 name: plex
 x-logging: &default-logging
-  driver: json-file
   options:
-    max-size: "5m"
-    max-file: "1"
+    max-size: '5m'
+    max-file: '1'
+  driver: json-file
 
 services:
   plex:
@@ -15,12 +15,10 @@ services:
     hostname: ${BASE_HOST_NAME:-$HOSTNAME}
     restart: always
     logging: *default-logging
+    ports:
+      - '172.17.0.1:64306:32400'
     networks:
       - plex
-      - proxy
-      - cloudflare
-    ports:
-      - "172.17.0.1:32400:32400"
     environment:
       TZ: ${TZ:-America/New_York}
       PLEX_CLAIM: ${PLEX_CLAIM:-}
@@ -38,28 +36,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-    labels:
-      - 'traefik.enable=true'
-      - 'cloudflare.enable=true'
-      - 'traefik.docker.network=proxy'
-      - 'cloudflare.service=http://plex-app:32400'
-      - 'cloudflare.hostname=plex.${CLOUDFLARE_ZONE_NAME:-}'
-      - 'traefik.http.routers.plex-app.entrypoints=http'
-      - 'traefik.http.routers.plex-app-secure.tls=true'
-      - 'traefik.http.routers.plex-app.rule=Host($(${BASE_HOST_NAME:-$HOSTNAME}))'
-      - 'traefik.http.middlewares.plex-app-https-redirect.redirectscheme.scheme=https'
-      - 'traefik.http.routers.plex-app.middlewares=plex-app-https-redirect'
-      - 'traefik.http.routers.plex-app-secure.entrypoints=https'
-      - 'traefik.http.routers.plex-app-secure.rule=Host($(${BASE_HOST_NAME:-$HOSTNAME}))'
-      - 'traefik.http.routers.plex-app-secure.tls.certresolver=cloudflare'
-      - 'traefik.http.routers.plex-app-secure.service=plex-app'
-      - 'traefik.http.services.plex-app.loadbalancer.server.port=32400'
 
 networks:
   plex:
     name: plex
     external: false
-  proxy:
-    external: true
-  cloudflare:
-    external: true
