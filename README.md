@@ -81,6 +81,8 @@ docker compose -f docker-compose.traefik.yaml --env-file .env up -d
 
 - **Web Interface**: http://172.17.0.1:64306
 
+Non-HTTP protocol ports are published identically in all three compose variants, because they cannot be proxied over HTTP: `32469`, `8324`, `1900/udp` and `32410-32414/udp` (DLNA, discovery and companion apps).
+
 ## 📂 Volumes
 
 - `./volumes/config/plex` - Data storage

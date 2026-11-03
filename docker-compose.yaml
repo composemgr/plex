@@ -17,6 +17,10 @@ services:
     logging: *default-logging
     ports:
       - '172.17.0.1:64306:32400'
+      - '32469:32469'
+      - '8324:8324'
+      - '1900:1900/udp'
+      - '32410-32414:32410-32414/udp'
     networks:
       - plex
     environment:

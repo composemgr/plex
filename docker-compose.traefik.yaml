@@ -13,6 +13,11 @@ services:
     hostname: ${BASE_HOST_NAME:-$HOSTNAME}
     restart: always
     logging: *default-logging
+    ports:
+      - '32469:32469'
+      - '8324:8324'
+      - '1900:1900/udp'
+      - '32410-32414:32410-32414/udp'
     labels:
       - 'traefik.enable=true'
       - 'traefik.docker.network=traefik'
